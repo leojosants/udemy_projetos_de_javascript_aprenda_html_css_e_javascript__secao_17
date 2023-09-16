@@ -1,6 +1,8 @@
 /* */
-const tasks = document.querySelectorAll('.tasks li');
 const columns = document.querySelectorAll('.tasks');
+const tasks = document.querySelectorAll('.tasks li');
+const add_task_form = document.querySelector('#add_task_form');
+const add_task_form_input = document.querySelector('#add_task_form_input');
 let dragged_task = null;
 
 /* */
@@ -55,3 +57,25 @@ for (let i = 0; i < columns.length; i++) {
         previous_column.removeChild(dragged_task);
     });
 };
+
+/* */
+add_task_form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const new_task_text = add_task_form_input.value.trim();
+
+    if (new_task_text !== '') {
+        const new_task = document.createElement('li');
+        new_task.textContent = new_task_text;
+        new_task.setAttribute('draggable', 'true');
+
+        new_task.addEventListener('dragstart', function (event) {
+            dragged_task = new_task;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', new_task.innerHTML);
+            new_task.classList.add('dragging');
+        });
+
+        document.querySelector('#todo').appendChild(new_task);
+        add_task_form_input.value = '';
+    };
+});
